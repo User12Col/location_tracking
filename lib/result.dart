@@ -1,16 +1,10 @@
-import 'dart:async';
+
 
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:geolocator/geolocator.dart';
-import 'package:location_tracking/bloc/location_bloc.dart';
-import 'package:location_tracking/bloc/location_event.dart';
-import 'package:location_tracking/bloc/location_state.dart';
-import 'package:location_tracking/location_manager.dart';
 import 'package:location_tracking/location_service.dart';
 
 class ResultPage extends StatefulWidget {
-  const ResultPage({Key? key}) : super(key: key);
+  const ResultPage({super.key});
 
   @override
   State<ResultPage> createState() => _ResultPageState();
