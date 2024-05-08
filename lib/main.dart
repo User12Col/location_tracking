@@ -16,11 +16,13 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiBlocProvider(
       providers: [
-        BlocProvider<LocationBloc>(create:(context)=> LocationBloc(locationService: LocationService())),
+        BlocProvider<LocationBloc>(
+            create: (context) =>
+                LocationBloc(locationService: LocationService())),
       ],
       child: const MaterialApp(
         debugShowCheckedModeBanner: false,
-        title: 'Flutter Demo',
+        title: 'Tracking Map',
         home: ResultPage(),
       ),
     );
