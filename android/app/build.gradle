@@ -24,7 +24,8 @@ if (flutterVersionName == null) {
 
 android {
     namespace "com.example.location_tracking"
-    compileSdk flutter.compileSdkVersion
+    compileSdk 34
+    
     ndkVersion flutter.ndkVersion
 
     compileOptions {
