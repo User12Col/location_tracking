@@ -9,30 +9,26 @@ class LocationService {
   }
 
   LocationService._internal();
-
+  
   final GeolocatorPlatform _geolocator = GeolocatorPlatform.instance;
-  Stream<Position>? _positionStream;
-
-  void startListening() async {
+  late Stream<Position> _positionStream;
+  Stream<Position>? get positionStream => _positionStream;
+  Future<Stream<Position>?> signUpListenLating() async {
     bool checkPermisson = await checkPermission();
-    // bool serviceEnabled = await Geolocator.isLocationServiceEnabled();
     if (checkPermisson) {
       _positionStream = _geolocator.getPositionStream(
         locationSettings: const LocationSettings(
-          accuracy: LocationAccuracy.best,
-          distanceFilter: 2,
+          accuracy: LocationAccuracy.high,
+          distanceFilter: 1,
         ),
       );
-      StreamSubscription<Position> posStream = _positionStream!.listen((event) {
-        print('Stream: ${event.latitude} - ${event.longitude}');
-      });
-    } else {
-      print('into here');
+      return _positionStream;
     }
+    return null;
   }
-
-  void stopListening() {}
-
+  Future<Position> getCurrentPosition() async {
+    return await Geolocator.getCurrentPosition();
+  }
   Future<bool> checkPermission() async {
     LocationPermission permission = await Geolocator.checkPermission();
     if (permission == LocationPermission.denied) {
@@ -43,12 +39,4 @@ class LocationService {
     }
     return true;
   }
-
-  void onInitSuccess() {}
-
-  void onError() {}
-
-  void onChange() {}
-
-  Stream<Position>? get positionStream => _positionStream;
 }

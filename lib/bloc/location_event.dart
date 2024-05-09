@@ -1,5 +1,12 @@
-abstract class LocationEvent{}
+import 'package:geolocator/geolocator.dart';
 
-class EventLoadLocation extends LocationEvent{
-  EventLoadLocation();
+abstract class LocationEvent {}
+
+class InitialLoadLocationEvent extends LocationEvent {
+  
+}
+
+class LoadedLocationEvent extends LocationEvent {
+  LoadedLocationEvent({required this.position});
+  final Position position;
 }

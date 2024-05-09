@@ -1,13 +1,21 @@
-  class LocationState {
-    final double lat;
-    final double lng;
+import 'package:geolocator/geolocator.dart';
 
-    LocationState({this.lat = 0.0, this.lng = 0.0});
+class LocationState {}
 
-    LocationState copyWith({double? lat, double? lng}){
-      return LocationState(
-        lat: lat ?? this.lat,
-        lng: lng ?? this.lng,
-      );
-    }
+class LocationInital extends LocationState {
+  LocationInital();
+}
+
+class LocationLoadSuccess extends LocationState {
+  Position position;
+  LocationLoadSuccess({required this.position});
+
+  LocationLoadSuccess copyWith({Position? position}) {
+    return LocationLoadSuccess(position: position ?? this.position);
   }
+}
+
+class LocationLoadFailure extends LocationState {
+  final String message;
+  LocationLoadFailure({required this.message});
+}

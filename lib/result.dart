@@ -1,6 +1,9 @@
-
-
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:geolocator/geolocator.dart';
+import 'package:location_tracking/bloc/location_bloc.dart';
+import 'package:location_tracking/bloc/location_event.dart';
+import 'package:location_tracking/bloc/location_state.dart';
 import 'package:location_tracking/location_service.dart';
 
 class ResultPage extends StatefulWidget {
@@ -10,16 +13,18 @@ class ResultPage extends StatefulWidget {
   State<ResultPage> createState() => _ResultPageState();
 }
 
-class _ResultPageState extends State<ResultPage> with WidgetsBindingObserver{
-  late LocationService _locationService;
+class _ResultPageState extends State<ResultPage> with WidgetsBindingObserver {
   // late LocationBloc _locationBloc;
   // late StreamSubscription<Position>? _positionSubscription;
+  late Position currentPosition;
+  late LocationService locationSerivce;
   @override
   void initState() {
     super.initState();
     WidgetsBinding.instance.addObserver(this);
-    _locationService = LocationService();
-    _locationService.startListening();
+    locationSerivce = LocationService();
+
+    // _locationService.signUpListenLating();
     // _locationBloc = BlocProvider.of<LocationBloc>(context);
     // _locationBloc.add(EventLoadLocation());
   }
@@ -32,7 +37,7 @@ class _ResultPageState extends State<ResultPage> with WidgetsBindingObserver{
         break;
       case AppLifecycleState.paused:
         print("Paused");
-        _locationService.startListening();
+        // _locationService.listening();
         break;
       case AppLifecycleState.resumed:
         print("Resumed");
@@ -65,29 +70,25 @@ class _ResultPageState extends State<ResultPage> with WidgetsBindingObserver{
     //   ),
     // );
     return Scaffold(
-      body: SafeArea(
-        child: StreamBuilder(
-          stream: _locationService.positionStream,
-          builder: (context, snapshot) {
-            if (snapshot.connectionState == ConnectionState.waiting) {
-              return const Center(
-                child: CircularProgressIndicator(),
-              );
-            } else if (snapshot.hasData) {
-              print('${snapshot.data!.latitude} - ${snapshot.data!.longitude}');
-              return Center(
-                child: Text(
-                  '${snapshot.data!.latitude} - ${snapshot.data!.longitude}',
-                ),
-              );
-            } else {
-              return const Center(
-                child: Text('No permission 1'),
-              );
-            }
-          },
-        ),
-      ),
+      body: SafeArea(child: BlocBuilder<LocationBloc, LocationState>(
+        builder: (context, state) {
+          if (state is LocationInital) {
+            context.read<LocationBloc>().add(InitialLoadLocationEvent());
+            return const Center(
+              child: CircularProgressIndicator(),
+            );
+          } else if (state is LocationLoadSuccess) {
+            return Center(
+              child: Text(
+                  'Your location: ${state.position.latitude} - ${state.position.longitude}'),
+            );
+          }
+
+          return const Center(
+            child: Text('Something went wrong:))'),
+          );
+        },
+      )),
     );
   }
 }

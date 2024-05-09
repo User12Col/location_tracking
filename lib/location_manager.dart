@@ -11,7 +11,7 @@ class LocationManager {
   Future<void> updateLocation() async {
     try {
       _currentPosition = await Geolocator.getCurrentPosition(
-        desiredAccuracy: LocationAccuracy.high,
+        desiredAccuracy: LocationAccuracy.bestForNavigation,
       );
     } catch (e) {
       print("Error getting location: $e");
