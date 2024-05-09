@@ -82,6 +82,10 @@ class _ResultPageState extends State<ResultPage> with WidgetsBindingObserver {
               child: Text(
                   'Your location: ${state.position.latitude} - ${state.position.longitude}'),
             );
+          } else if (state is LocationLoadFailure) {
+            return Center(
+              child: Text('Erorr ${state.message}'),
+            );
           }
 
           return const Center(

@@ -8,7 +8,6 @@ import 'package:location_tracking/location_service.dart';
 
 class LocationBloc extends Bloc<LocationEvent, LocationState> {
   final LocationService _locationService;
-  late StreamSubscription<Position>? _positionSubscription;
   LocationBloc({required LocationService locationService})
       : _locationService = locationService,
         super(LocationInital()) {
@@ -16,19 +15,25 @@ class LocationBloc extends Bloc<LocationEvent, LocationState> {
     on<LoadedLocationEvent>(listenLocation);
   }
 
+
   Future<void> initialLocation(
       InitialLoadLocationEvent event, Emitter<LocationState> emit) async {
     try {
       final currentLocation = await _locationService.getCurrentPosition();
-      emit(LocationLoadSuccess(position: currentLocation));
-      _positionSubscription?.cancel();
+      if (currentLocation == null) {
+        emit(LocationLoadFailure(
+            message: 'Vào setting mở quyền sử dụng location'));
+      } else {
+        emit(LocationLoadSuccess(position: currentLocation));
+      }
+      // _positionSubscription?.cancel();
       Stream<Position>? positionStream =
           await _locationService.signUpListenLating();
       if (positionStream == null) {
-        emit(LocationLoadFailure(message: 'Something wrong ?'));
+        emit(LocationLoadFailure(message: 'Khôg thể khởi tạo luồng'));
       } else {
-        _positionSubscription = positionStream
-            .listen((event) => emit(LocationLoadSuccess(position: event)));
+         positionStream
+            .listen((event) => LoadedLocationEvent(position: event));
       }
     } catch (err) {
       emit(LocationLoadFailure(message: err.toString()));
