@@ -18,7 +18,7 @@ class LocationService {
     if (checkPermisson) {
       _positionStream = _geolocator.getPositionStream(
         locationSettings: const LocationSettings(
-          accuracy: LocationAccuracy.high,
+          accuracy: LocationAccuracy.best,
           distanceFilter: 1,
         ),
       );
@@ -27,7 +27,7 @@ class LocationService {
       if (checkPermisson) {
         _positionStream = _geolocator.getPositionStream(
           locationSettings: const LocationSettings(
-            accuracy: LocationAccuracy.high,
+            accuracy: LocationAccuracy.best,
             distanceFilter: 1,
           ),
         );

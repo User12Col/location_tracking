@@ -36,7 +36,8 @@ class _ResultPageState extends State<ResultPage> with WidgetsBindingObserver {
         print("Inactive");
         break;
       case AppLifecycleState.paused:
-        print("Paused");
+        // context.read<LocationBloc>().add(LoadLocationInBackgroundEvent());
+        print('Hello in here paussed');
         // _locationService.listening();
         break;
       case AppLifecycleState.resumed:

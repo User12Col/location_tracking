@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:location_tracking/bloc/location_event.dart';
@@ -7,6 +8,7 @@ import 'package:location_tracking/bloc/location_state.dart';
 import 'package:location_tracking/location_service.dart';
 
 class LocationBloc extends Bloc<LocationEvent, LocationState> {
+  Stream<Position>? positionStream;
   final LocationService _locationService;
   LocationBloc({required LocationService locationService})
       : _locationService = locationService,
@@ -14,7 +16,6 @@ class LocationBloc extends Bloc<LocationEvent, LocationState> {
     on<InitialLoadLocationEvent>(initialLocation);
     on<LoadedLocationEvent>(listenLocation);
   }
-
 
   Future<void> initialLocation(
       InitialLoadLocationEvent event, Emitter<LocationState> emit) async {
@@ -27,14 +28,20 @@ class LocationBloc extends Bloc<LocationEvent, LocationState> {
         emit(LocationLoadSuccess(position: currentLocation));
       }
       // _positionSubscription?.cancel();
-      Stream<Position>? positionStream =
-          await _locationService.signUpListenLating();
+
+      positionStream = await _locationService.signUpListenLating();
       if (positionStream == null) {
         emit(LocationLoadFailure(message: 'Khôg thể khởi tạo luồng'));
       } else {
-         positionStream
-            .listen((event) => LoadedLocationEvent(position: event));
+        positionStream!.listen((event) {
+          print(
+              'positionStream location: ${event.latitude} vs ${event.longitude}');
+          // LoadedLocationEvent(position: event);
+          add(LoadedLocationEvent(position: event));
+          //  emit((state as LocationLoadSuccess).copyWith(position: event));
+        });
       }
+      // positionStream.
     } catch (err) {
       emit(LocationLoadFailure(message: err.toString()));
     }
